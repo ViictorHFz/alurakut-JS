@@ -1,13 +1,23 @@
 import MainGrid from '../src/components/MainGrid';
 import Box from '../src/components/Box';
-import { AlurakutMenu, OrkutNostalgicIconSet } from '../src/lib/SocialCommons';
+import { AlurakutMenu, OrkutNostalgicIconSet, AlurakutProfileSidebarMenuDefault } from '../src/lib/SocialCommons';
 import { ProfileRelationsBoxWrapper } from '../src/components/ProfileRelations';
 
 function ProfileSidebar(propriedades) {
   //console.log(propriedades);
   return(
-    <Box>
+    <Box>nom 
       <img src={`https://github.com/${propriedades.gitHubUser}.png`} style={{ borderRadius: '8px'}} />
+      <hr />
+
+      <p>
+        <a className="boxLink" href={`https://github.com/${propriedades.gitHubUser}`}>
+          @{propriedades.gitHubUser}
+        </a>
+      </p>
+      <hr />
+
+      <AlurakutProfileSidebarMenuDefault />
     </Box>
   );
 }
