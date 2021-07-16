@@ -23,6 +23,29 @@ function ProfileSidebar(propriedades) {
   );
 }
 
+function ProfileRelationsBox(propriedades) {
+  return (
+    <ProfileRelationsBoxWrapper>
+      <h2 className="smallTitle">
+        {propriedades.title} ({propriedades.items.length})
+      </h2>
+      
+      <ul>
+          {/*seguidores.map((itemAtual) => {
+            return (
+              <li key={itemAtual}>
+                <a href={`/user/${itemAtual}`}>
+                  <img src={itemAtual} />
+                  <span>{itemAtual}</span>
+                </a>
+              </li>
+            )
+          })*/}
+        </ul>
+    </ProfileRelationsBoxWrapper>
+  );
+}
+
 export default function Home() {
   
   const gitHubUser = 'ViictorHFz';
@@ -32,6 +55,7 @@ export default function Home() {
     title: 'Eu odeio acordar cedo!',
     image: 'https://alurakut.vercel.app/capa-comunidade-01.jpg'
   }]);
+
   const pessoasFavoritas = [
     'juunegreiros',
     'omariosouto',
@@ -40,6 +64,20 @@ export default function Home() {
     'marcobrunodev',
     'felipefialho'
   ];
+
+  const [seguidores, setSeguidores] = React.useState([]);
+
+  React.useEffect(function() {
+    fetch('https://api.github.com/users/ViictorHFz/followers')
+    .then(function(respostaServidor) {
+      return respostaServidor.json();
+    })
+    .then(function(respostaCompleta) {
+      setSeguidores(respostaCompleta);
+    })
+  }, [])
+
+
 
   return (
     <>
@@ -74,7 +112,6 @@ export default function Home() {
               const comunidadesAtualizadas = [...comunidades, comunidade,];
               setComunidades(comunidadesAtualizadas);
               
-
             }}>
               <div>
                 <input 
@@ -102,7 +139,12 @@ export default function Home() {
         </div>
         
         <div className="profileRelationsArea" style={{ gridArea: 'profileRelationsArea' }}>
+          <ProfileRelationsBox title="seguidores" items={seguidores}/>
           <ProfileRelationsBoxWrapper>
+            <h2 className="smallTitle">
+              Comunidades ({comunidades.length})
+            </h2>
+            
             <ul>
                 {comunidades.map((itemAtual) => {
                   return (
@@ -121,7 +163,7 @@ export default function Home() {
             <h2 className="smallTitle">
               Pessoas da Comunidade ({pessoasFavoritas.length})
             </h2>
-            
+
             <ul>
               {pessoasFavoritas.map((itemAtual) => {
                 return (
