@@ -1,4 +1,6 @@
-import React from 'react'
+import React from 'react';
+import nookies from 'nookies';
+import jwt from 'jsonwebtoken';
 import MainGrid from '../src/components/MainGrid';
 import Box from '../src/components/Box';
 import { AlurakutMenu, OrkutNostalgicIconSet, AlurakutProfileSidebarMenuDefault } from '../src/lib/SocialCommons';
@@ -8,12 +10,12 @@ function ProfileSidebar(propriedades) {
   //console.log(propriedades);
   return(
     <Box>
-      <img src={`https://github.com/${propriedades.gitHubUser}.png`} style={{ borderRadius: '8px'}} />
+      <img src={`https://github.com/${propriedades.githubUser}.png`} style={{ borderRadius: '8px'}} />
       <hr />
 
       <p>
-        <a className="boxLink" href={`https://github.com/${propriedades.gitHubUser}`}>
-          @{propriedades.gitHubUser}
+        <a className="boxLink" href={`https://github.com/${propriedades.githubUser}`}>
+          @{propriedades.githubUser}
         </a>
       </p>
       <hr />
@@ -46,9 +48,9 @@ function ProfileRelationsBox(propriedades) {
   );
 }
 
-export default function Home() {
+export default function Home(props) {
   
-  const gitHubUser = 'ViictorHFz';
+  const usuarioAleatorio = props.githubUser;
   //UseState retorna um array (primeira posição os itens, segunda a função que muda o estado)
   const [comunidades, setComunidades] = React.useState([]);
 
@@ -103,10 +105,10 @@ export default function Home() {
 
   return (
     <>
-      <AlurakutMenu githubUser={gitHubUser}/>
+      <AlurakutMenu githubUser={usuarioAleatorio}/>
       <MainGrid>
         <div className="profileArea" style={{ gridArea: 'profileArea' }}> 
-          <ProfileSidebar gitHubUser={gitHubUser} />
+          <ProfileSidebar githubUser={usuarioAleatorio} />
         </div>
   
         <div className="feedArea" style={{ gridArea: 'feedArea' }}>
@@ -128,7 +130,7 @@ export default function Home() {
               const comunidade = {
                 title: dadosDoForm.get('title'),
                 imageUrl: dadosDoForm.get('image'),
-                creatorSlug: gitHubUser,
+                creatorSlug: usuarioAleatorio,
               }
 
               fetch('/api/comunidades', {
@@ -218,4 +220,31 @@ export default function Home() {
       </MainGrid>
     </>
   )
+}
+
+export async function getServerSideProps(context) {
+  const cookies = nookies.get(context)
+  const token = cookies.USER_TOKEN;
+  const { isAuthenticated } = await fetch('https://alurakut.vercel.app/api/auth', {
+    headers: {
+        Authorization: token
+      }
+  })
+  .then((resposta) => resposta.json())
+
+  if(!isAuthenticated) {
+    return {
+      redirect: {
+        destination: '/login',
+        permanent: false,
+      }
+    }
+  }
+
+  const { githubUser } = jwt.decode(token);
+  return {
+    props: {
+      githubUser
+    }, // will be passed to the page component as props
+  }
 }
