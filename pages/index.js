@@ -245,6 +245,6 @@ export async function getServerSideProps(context) {
   return {
     props: {
       githubUser
-    }, // will be passed to the page component as props
+    },
   }
 }
