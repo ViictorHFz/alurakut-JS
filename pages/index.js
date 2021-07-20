@@ -226,7 +226,7 @@ export async function getServerSideProps(context) {
   const cookies = nookies.get(context)
   const token = cookies.USER_TOKEN;
   //esse endpoint do fetch só funciona em produção, em dev utilizar localhost ex 'http://localhost:3000/api/auth'
-  const { isAuthenticated } = await fetch('https://alurakutsocialjs.vercel.app/', {
+  const { isAuthenticated } = await fetch('https://alurakutsocialjs.vercel.app/api/auth', {
     headers: {
         Authorization: token
       }
